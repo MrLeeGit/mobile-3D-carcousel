@@ -1,0 +1,8 @@
+{
+  "@mfelibs/generator-spkg": {
+    "promptValues": {
+      "authorName": "",
+      "authorEmail": ""
+    }
+  }
+}
