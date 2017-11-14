@@ -2,10 +2,6 @@
 
 3D旋转木马，适配H5移动端页面，欢迎大家踊跃的提出bug
 
-
-#### demo
-<a href="http://unpkg.smfe.sina.cn/@mfelibs/carousel/dist/demo.html" target="blank">http://unpkg.smfe.sina.cn/@mfelibs/carousel/dist/demo.html</a>
-
 ## 运行
 ```bash
 npm run dev
