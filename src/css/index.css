@@ -1,0 +1,54 @@
+.carousel {
+    overflow: hidden;
+    position: relative;
+    height: 3.2rem;
+    -webkit-perspective: 520px;
+            perspective: 520px;
+    -webkit-transform-style: preserve-3d;
+            transform-style: preserve-3d;
+    -webkit-transform-origin: 0% 50%;
+            transform-origin: 0% 50%;
+    margin:0 .2rem;
+    -webkit-will-change: perspective-origin;
+    will-change: perspective-origin;
+    
+  }
+  .carousel-item {
+    display: none;
+    width: 2.6rem;
+    height: 2.72rem;
+    background: #fff;
+    position: absolute;
+    top: 0;
+    left: 0;
+    -webkit-box-shadow: 0 4px 8px rgba(0,0,0,.7);
+    box-shadow: 0 4px 8px rgba(0,0,0,.7);
+    cursor: pointer;
+  }
+  .carousel-img {
+    padding: .06rem 0.06rem 0;
+    width: 100%;
+    box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+  }
+  .carousel-h2{
+    font-size:.2rem;
+    height: .6rem;
+    padding:0 0.06rem;
+    line-height: .3rem;
+    padding-top:.16rem;
+    text-align: center;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+    color:#1a1a1a;
+  }
+  .carousel-h2:active,.carousel-h2:hover,.carousel-h2:link,.carousel-h2:visited{
+    color:#1a1a1a;
+  }
+  .carousel.scrolling .carousel-item .materialboxed,.carousel .carousel-item:not(.active) .materialboxed {
+    pointer-events: none;
+  }
+  
+  
