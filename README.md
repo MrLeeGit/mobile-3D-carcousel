@@ -1,26 +1,20 @@
 # @mfelibs/carousel
 
-一句话介绍项目摘要。
+3D旋转木马，支持移动端
 
 
-#### demo
-<a href="http://unpkg.smfe.sina.cn/@mfelibs/carousel/dist/demo.html" target="blank">http://unpkg.smfe.sina.cn/@mfelibs/carousel/dist/demo.html</a>
-
-
-## 安装
+## run
 
 ```bash
-cnpm install @mfelibs/carousel --save
+npm run dev
 ```
 
-通过 `imort` 导入
+## build
 ```javascript
-import carousel from '@mfelibs/carousel'
+npm run build
 ```
 
-## 使用
-
-调用 `Foo` 构造函数，实例化组件对象:
+## call
 ```javascript
 const config = {
     boxDom : $("#carouselBox"),   //动画父容器
@@ -32,11 +26,11 @@ const config = {
 }
 carousel.init(config);
 ```
-## 实际效果
-匀速运动
+## style
+Uniform
 <br />
 <img src="src/images/carousel1.gif" />
 <br />
-加速运动
+ease
 <br />
 <img src="src/images/carousel2.gif" />
