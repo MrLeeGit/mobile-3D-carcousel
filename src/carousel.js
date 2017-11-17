@@ -1,4 +1,4 @@
-(function(window) {
+;(function(window) {
     var lastTime = 0,
       vendors = ['webkit', 'moz'],
       requestAnimationFrame = window.requestAnimationFrame,
@@ -75,9 +75,10 @@
     init : function(options) {
       var defaults = {
         boxDom : $("#carouselBox"),   //动画父容器
-        animationDom : $(".carousel"), //动画容器
+        animationDom :'carousel', //动画容器类名
         itemClass : 'carousel-item',   //动画子容器类名
-        duration: 200, // ms
+        animation : 'ease',
+        duration: 100, // ms
         dist: -100, // zoom scale TODO: make this more intuitive as an option
         shift: 0, // spacing for center image
         padding: 0, // Padding between non center items
@@ -85,17 +86,18 @@
         indicators: false, // Toggle indicators
         noWrap: false, // Don't wrap around and cycle through items.
         onCycleTo: null, // Callback for when a new slide is cycled to.
-        hasSkew : false //  是否重力感应
+        hasSkew : false //是否重力感应
       };
       options = $.extend(defaults, options);
-      var namespace = Materialize.objectSelectorString(options.animationDom);
-      return options.animationDom.each(function(i) {
+      var namespace = Materialize.objectSelectorString($('.'+options.animationDom));
+      return $("."+options.animationDom).each(function(i) {
   
         var images, item_width, item_height, offset, center, pressed, dim, count,
             reference, referenceY, amplitude, target, velocity, scrolling,
             xform, frame, timestamp, ticker, dragged, vertical_dragged,isTouchClick,isTouch,tweenedOpacity,zTranslation;
         var scrollingTimeout = null;
         var oneTimeCallback = null;
+        var bigvalue = 1;
   
         //重力感应滚动
         if (window.DeviceMotionEvent && options.hasSkew) {
@@ -203,7 +205,6 @@
           if (e.targetTouches && (e.targetTouches.length >= 1)) {
             return e.targetTouches[0].clientX;
           }
-  
           // mouse event
           return e.clientX;
         }
@@ -224,7 +225,6 @@
         
         function scroll(x) {
           // Track scrolling state
-          
           scrolling = true;
           if (!view.hasClass('scrolling')) {
             view.addClass('scrolling');
@@ -239,16 +239,21 @@
           }, options.duration);
   
           // Start actual scroll
-          var i, half, delta, dir, tween, el, alignment, xTranslation;
+          var i, half, delta, dir, tween, el, alignment, xTranslation,flag,bigdir;
           var lastCenter = center;
           
-          offset = (typeof x === 'number') ? x : offset;
-          center = Math.floor((offset + dim / 2) / dim);
-          delta = offset - center * dim;
-          dir = (delta < 0) ? 1 : -1;
-          tween = -dir * delta * 2 / dim;
+          offset = (typeof x === 'number') ? x : offset; //总共移动距离
+          center = Math.floor((offset + dim / 2) / dim); //切换当前视口标识
+          delta = offset - center * dim;  // 单个元素为单位滚动的距离
+          dir = (delta < 0) ? 1 : -1; //滚动中间界定值
+          tween = -dir * delta * 2 / dim; //滚动的百分比
           half = count >> 1;
-  
+          if(parseInt(frame) < parseInt(offset)){
+            bigdir = 1;
+          }else if(parseInt(frame) > parseInt(offset)){
+            bigdir = -1;
+          }
+
           if (!options.fullWidth) {
             alignment = 'translateX(' + (view[0].clientWidth - item_width) / 2 + 'px) ';
             alignment += 'translateY(' + (view[0].clientHeight - item_height) / 2 + 'px)';
@@ -260,7 +265,6 @@
           // Don't show wrapped items.
           if (!noWrap || (center >= 0 && center < count)) {
             el = images[wrap(center)];
-  
             // Add active class to center item.
             if (!$(el).hasClass('active')) {
               view.find('.'+options.itemClass).removeClass('active');
@@ -290,8 +294,21 @@
             // Don't show wrapped items.
             if (!noWrap || center + i < count) {
               el = images[wrap(center + i)];
+              var xTranslation = options.shift + (dim * i - delta) / 2
+              
+              if(dir === -1 && i === 1 && bigdir === -1 && options.animation === 'ease'){
+                var adisxv,atween;
+                if(tween <= 0.7){
+                  adisxv = parseInt(parseInt(dim/2)-parseInt(delta) - parseInt(dim/2)*0.3);
+                  atween = (1-(adisxv/(parseInt(parseInt(dim/2)*0.7)))).toFixed(1);
+                }else{
+                  adisxv = parseInt(parseInt(dim/2)-parseInt(delta));
+                  atween = (adisxv/(parseInt(parseInt(dim/2)*0.3))).toFixed(1);
+                } 
+                xTranslation = options.shift + (dim * i - delta - (dim/3*atween)) / 2;
+              }
               el.style[xform] = alignment +
-                ' translateX(' + (options.shift + (dim * i - delta) / 2) + 'px)' +
+                ' translateX(' + xTranslation + 'px)' +
                 ' translateZ(' + zTranslation + 'px)';
               el.style.zIndex = -i;
               el.style.opacity = tweenedOpacity;
@@ -310,8 +327,20 @@
             // Don't show wrapped items.
             if (!noWrap || center - i >= 0) {
               el = images[wrap(center - i)];
+              var xTranslation = -options.shift + (-dim * i - delta) / 2;
+              if(dir === 1 && i === 1 && bigdir === 1 && options.animation === 'ease'){
+                var adisxv,atween;
+                if(tween <= 0.7){
+                  adisxv = parseInt(parseInt(dim/2)-parseInt(Math.abs(delta))- parseInt(dim/2)*0.3);
+                  atween = (1-(adisxv/(parseInt(parseInt(dim/2)*0.7)))).toFixed(1);
+                }else{
+                  adisxv = parseInt(parseInt(dim/2)-parseInt(Math.abs(delta)));
+                  atween = (adisxv/(parseInt(parseInt(dim/2)*0.3))).toFixed(1);
+                }
+                xTranslation = -options.shift + (-dim * i - delta + (dim/3*atween)) / 2;
+              }
               el.style[xform] = alignment +
-                ' translateX(' + (-options.shift + (-dim * i - delta) / 2) + 'px)' +
+                ' translateX(' + xTranslation + 'px)' +
                 ' translateZ(' + zTranslation + 'px)';
               el.style.zIndex = -i;
               el.style.opacity = tweenedOpacity;
@@ -372,6 +401,7 @@
             } else {
                 scroll(target);
             }
+            
           }
         }
   
@@ -385,7 +415,6 @@
           } else if (!options.fullWidth) {
             var clickedIndex = $(e.target).closest('.'+options.itemClass).index();
             var diff = wrap(center) - clickedIndex;
-  
             // Disable clicks if carousel was shifted by click
             if (diff !== 0) {
               e.preventDefault();
@@ -505,7 +534,6 @@
             e.preventDefault();
             e.stopPropagation();
           }
-          
           return false;
         }
   
@@ -594,9 +622,9 @@
       $(this).off('carouselNext carouselPrev carouselSet');
       $(window).off('resize.carousel-'+uniqueNamespace);
       if (typeof window.ontouchstart !== 'undefined') {
-        $(this).off('touchstart.carousel touchmove.carousel touchend.carousel');
+        $(this).off('touchstart.'+options.animationDom+' touchmove.'+options.animationDom+' touchend.'+options.animationDom+'');
       }
-      $(this).off('mousedown.carousel mousemove.carousel mouseup.carousel mouseleave.carousel click.carousel');
+      $(this).off('mousedown.'+options.animationDom+' mousemove.'+options.animationDom+' mouseup.'+options.animationDom+' mouseleave.'+options.animationDom+' click.'+options.animationDom+'');
     }
   };
   

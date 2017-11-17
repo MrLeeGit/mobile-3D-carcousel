@@ -1,6 +1,6 @@
 {
     "name": "@mfelibs/carousel",
-    "version": "0.0.1",
+    "version": "0.0.7",
     "description": "3D旋转木马",
     "keywords": [],
     "main": "src/index.js",
@@ -75,6 +75,7 @@
     },
     "dependencies": {
         "@mfelibs/base-css": "^2.1.4",
-        "@mfelibs/base-utils": "^1.5.3"
+        "@mfelibs/base-utils": "^1.5.3",
+        "babel-plugin-transform-object-assign": "^6.22.0"
     }
 }
